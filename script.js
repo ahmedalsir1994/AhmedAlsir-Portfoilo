@@ -58,9 +58,9 @@ function highlightNavLink() {
     });
 
     navLinks.forEach(link => {
-        link.style.color = '';
+        link.classList.remove('active-link');
         if (link.getAttribute('href') === '#' + current) {
-            link.style.color = '#3498db';
+            link.classList.add('active-link');
         }
     });
 }

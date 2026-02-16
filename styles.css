@@ -73,6 +73,10 @@ body {
     color: var(--primary-color);
 }
 
+.nav-link.active-link {
+    color: var(--primary-color);
+}
+
 /* Hero Section */
 .hero {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
