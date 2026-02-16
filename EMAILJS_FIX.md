@@ -42,14 +42,14 @@ Click **Save**
 ### Step 6: Copy Template ID
 
 - Go back to **Email Templates** list
-- Copy the **ID** from your template (e.g., `template_t3tvhis`)
+- Copy the **ID** from your template (e.g., `template_xxx`)
 - Update `.env` file with this ID
 
 ### Step 7: Verify Service
 
 1. Click **Email Services** on the left
 2. Make sure your service is **Connected** (should show checkmark)
-3. Copy the **Service ID** (e.g., `service_ysjvawn`)
+3. Copy the **Service ID** (e.g., `service_xxx`)
 4. Update `.env` file with this ID
 
 ### Step 8: Test
