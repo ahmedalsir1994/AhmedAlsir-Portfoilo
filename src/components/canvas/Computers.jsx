@@ -9,7 +9,7 @@ const Computers = ({ isMobile }) => {
 
   return (
     <mesh>
-      <hemisphereLight intensity={isMobile ? 0.1 : 0.15} groundColor='black' />
+      <hemisphereLight intensity={isMobile ? 0.12 : 0.15} groundColor='black' />
       {!isMobile && (
         <spotLight
           position={[-20, 50, 10]}
@@ -33,30 +33,25 @@ const Computers = ({ isMobile }) => {
 
 const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
-  const [isVerySmall, setIsVerySmall] = useState(false);
 
   useEffect(() => {
-    // Check if mobile and very small screen
-    const mediaQueryMobile = window.matchMedia("(max-width: 500px)");
-    const mediaQueryVerySmall = window.matchMedia("(max-width: 768px)");
+    // Add a listener for changes to the screen size
+    const mediaQuery = window.matchMedia("(max-width: 500px)");
 
-    setIsMobile(mediaQueryMobile.matches);
-    setIsVerySmall(mediaQueryVerySmall.matches);
+    // Set the initial value of the `isMobile` state variable
+    setIsMobile(mediaQuery.matches);
 
-    const handleMobileChange = (event) => {
+    // Define a callback function to handle changes to the media query
+    const handleMediaQueryChange = (event) => {
       setIsMobile(event.matches);
     };
 
-    const handleVerySmallChange = (event) => {
-      setIsVerySmall(event.matches);
-    };
+    // Add the callback function as a listener for changes to the media query
+    mediaQuery.addEventListener("change", handleMediaQueryChange);
 
-    mediaQueryMobile.addEventListener("change", handleMobileChange);
-    mediaQueryVerySmall.addEventListener("change", handleVerySmallChange);
-
+    // Remove the listener when the component is unmounted
     return () => {
-      mediaQueryMobile.removeEventListener("change", handleMobileChange);
-      mediaQueryVerySmall.removeEventListener("change", handleVerySmallChange);
+      mediaQuery.removeEventListener("change", handleMediaQueryChange);
     };
   }, []);
 
@@ -66,16 +61,13 @@ const ComputersCanvas = () => {
       shadows={!isMobile}
       dpr={isMobile ? 1 : 1.5}
       camera={{ position: [20, 3, 5], fov: 25 }}
+      style={{ width: "100%", height: "100%" }}
       gl={{ 
         preserveDrawingBuffer: true,
-        antialias: isMobile ? false : true,
+        antialias: !isMobile,
         stencil: false,
         depth: true,
-        alpha: true,
         powerPreference: "high-performance",
-      }}
-      onCreated={(state) => {
-        state.gl.outputColorSpace = "srgb";
       }}
     >
       <Suspense fallback={<CanvasLoader />}>
