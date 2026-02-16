@@ -20,6 +20,8 @@ export default defineConfig({
         },
       },
     },
+    assetsInlineLimit: 4096,
+    assetsDir: 'assets',
     chunkSizeWarningLimit: 1000,
     sourcemap: false,
   },
@@ -27,3 +29,4 @@ export default defineConfig({
     include: ['react', 'react-dom', '@react-three/fiber', '@react-three/drei'],
   },
 })
+

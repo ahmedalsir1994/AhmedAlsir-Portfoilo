@@ -9,16 +9,18 @@ const Computers = ({ isMobile }) => {
 
   return (
     <mesh>
-      <hemisphereLight intensity={0.15} groundColor='black' />
-      <spotLight
-        position={[-20, 50, 10]}
-        angle={0.12}
-        penumbra={1}
-        intensity={1}
-        castShadow
-        shadow-mapSize={512}
-      />
-      <pointLight intensity={1} />
+      <hemisphereLight intensity={isMobile ? 0.1 : 0.15} groundColor='black' />
+      {!isMobile && (
+        <spotLight
+          position={[-20, 50, 10]}
+          angle={0.12}
+          penumbra={1}
+          intensity={1}
+          castShadow
+          shadow-mapSize={512}
+        />
+      )}
+      <pointLight intensity={isMobile ? 0.8 : 1} />
       <primitive
         object={computer.scene}
         scale={isMobile ? 0.7 : 0.75}
@@ -31,39 +33,49 @@ const Computers = ({ isMobile }) => {
 
 const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [isVerySmall, setIsVerySmall] = useState(false);
 
   useEffect(() => {
-    // Add a listener for changes to the screen size
-    const mediaQuery = window.matchMedia("(max-width: 500px)");
+    // Check if mobile and very small screen
+    const mediaQueryMobile = window.matchMedia("(max-width: 500px)");
+    const mediaQueryVerySmall = window.matchMedia("(max-width: 768px)");
 
-    // Set the initial value of the `isMobile` state variable
-    setIsMobile(mediaQuery.matches);
+    setIsMobile(mediaQueryMobile.matches);
+    setIsVerySmall(mediaQueryVerySmall.matches);
 
-    // Define a callback function to handle changes to the media query
-    const handleMediaQueryChange = (event) => {
+    const handleMobileChange = (event) => {
       setIsMobile(event.matches);
     };
 
-    // Add the callback function as a listener for changes to the media query
-    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    const handleVerySmallChange = (event) => {
+      setIsVerySmall(event.matches);
+    };
 
-    // Remove the listener when the component is unmounted
+    mediaQueryMobile.addEventListener("change", handleMobileChange);
+    mediaQueryVerySmall.addEventListener("change", handleVerySmallChange);
+
     return () => {
-      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+      mediaQueryMobile.removeEventListener("change", handleMobileChange);
+      mediaQueryVerySmall.removeEventListener("change", handleVerySmallChange);
     };
   }, []);
 
   return (
     <Canvas
-      frameloop='demand'
-      shadows
-      dpr={isMobile ? 1 : [1, 1.5]}
+      frameloop='auto'
+      shadows={!isMobile}
+      dpr={isMobile ? 1 : 1.5}
       camera={{ position: [20, 3, 5], fov: 25 }}
       gl={{ 
         preserveDrawingBuffer: true,
-        antialias: false,
+        antialias: isMobile ? false : true,
         stencil: false,
         depth: true,
+        alpha: true,
+        powerPreference: "high-performance",
+      }}
+      onCreated={(state) => {
+        state.gl.outputColorSpace = "srgb";
       }}
     >
       <Suspense fallback={<CanvasLoader />}>
