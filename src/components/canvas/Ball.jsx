@@ -15,12 +15,8 @@ const Ball = (props) => {
 
   if (!decal) return null;
 
-  const rotationIntensity = props.isMobile ? 0.3 : 1;
-  const floatIntensity = props.isMobile ? 0.5 : 2;
-  const speed = props.isMobile ? 0.8 : 1.75;
-
   return (
-    <Float speed={speed} rotationIntensity={rotationIntensity} floatIntensity={floatIntensity}>
+    <Float speed={1.75} rotationIntensity={1} floatIntensity={2}>
       <ambientLight intensity={0.25} />
       <directionalLight position={[0, 0, 0.05]} />
       <mesh castShadow receiveShadow scale={2.75}>
@@ -43,23 +39,18 @@ const Ball = (props) => {
   );
 };
 
-const BallCanvas = ({ icon, isMobile }) => {
+const BallCanvas = ({ icon }) => {
   if (!icon) return null;
   
   return (
     <Canvas
-      frameloop={isMobile ? 'demand' : 'demand'}
-      dpr={isMobile ? [1, 1] : [1, 2]}
-      gl={{ 
-        preserveDrawingBuffer: true,
-        antialias: !isMobile,
-        stencil: false,
-        depth: true
-      }}
+      frameloop='demand'
+      dpr={[1, 2]}
+      gl={{ preserveDrawingBuffer: true }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls enableZoom={false} />
-        <Ball imgUrl={icon} isMobile={isMobile} />
+        <Ball imgUrl={icon} />
       </Suspense>
 
       <Preload all />

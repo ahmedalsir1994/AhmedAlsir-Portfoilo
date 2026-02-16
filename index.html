@@ -3,24 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Mobile optimization -->
+    <!-- Preload critical assets -->
+    <link rel="preload" href="/desktop_pc/scene.gltf" as="fetch" crossorigin>
+    <link rel="preload" href="/planet/scene.gltf" as="fetch" crossorigin>
+    
+    <!-- Performance optimization -->
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="description" content="Ahmed Alsir - Full Stack Developer Portfolio" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Ahmed Alsir" />
-    <meta name="format-detection" content="telephone=no" />
     
     <title>Ahmed Alsir | Portfolio</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
   </body>
 </html>
