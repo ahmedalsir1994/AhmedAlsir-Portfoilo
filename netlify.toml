@@ -1,0 +1,8 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Skip secrets scanning for EmailJS public credentials
+# These are intentionally exposed in client-side code
+[context.production.build.environment]
+  SECRETS_SCAN_OMIT_KEYS = "VITE_APP_EMAILJS_SERVICE_ID,VITE_APP_EMAILJS_TEMPLATE_ID,VITE_APP_EMAILJS_PUBLIC_KEY"
