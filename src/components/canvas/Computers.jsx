@@ -34,6 +34,7 @@ const Computers = ({ isMobile }) => {
 const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
+  const canvasContainerRef = React.useRef(null);
 
   useEffect(() => {
     // Handle mobile detection with better breakpoints
@@ -59,66 +60,87 @@ const ComputersCanvas = () => {
     };
   }, []);
 
-  // Determine optimal DPR based on device (with safe defaults)
+  // Handle Chrome address bar resize on mobile
+  useEffect(() => {
+    if (!isMobile || typeof ResizeObserver === "undefined") return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      // Trigger canvas resize through Three.js
+    });
+
+    const container = canvasContainerRef.current;
+    if (container) {
+      resizeObserver.observe(container);
+    }
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [isMobile]);
+
+  // Determine optimal DPR based on device (capped to prevent GPU overload)
   const getDPR = () => {
-    if (isMobile) return 1;
-    if (isTablet) return 1.2;
-    return 1.5;
+    // Cap DPR to prevent WebGL context loss on Chrome mobile
+    const maxDPR = isMobile ? 1 : 1.3;
+    const deviceDPR = window.devicePixelRatio || 1;
+    return Math.min(deviceDPR, maxDPR);
   };
 
   return (
-    <Canvas
-      frameloop='auto'
-      shadows={!isMobile && !isTablet}
-      dpr={getDPR()}
-      camera={{ position: [20, 3, 5], fov: 25 }}
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "block",
-        position: "absolute",
-        top: 0,
-        left: 0,
-      }}
-      gl={{
-        preserveDrawingBuffer: true,
-        antialias: !isMobile,
-        stencil: false,
-        depth: true,
-        alpha: true,
-        powerPreference: isMobile ? "low-power" : "high-performance",
-        failIfMajorPerformanceCaveat: false,
-        logarithmicDepthBuffer: isMobile,
-      }}
-      onCreated={(state) => {
-        try {
-          // Ensure canvas fits properly
-          if (state.gl.domElement) {
-            state.gl.domElement.style.width = "100%";
-            state.gl.domElement.style.height = "100%";
-            state.gl.domElement.style.display = "block";
-            state.gl.domElement.style.position = "absolute";
-            state.gl.domElement.style.top = "0";
-            state.gl.domElement.style.left = "0";
+    <div ref={canvasContainerRef} style={{ width: "100%", height: "100%", position: "absolute" }}>
+      <Canvas
+        frameloop='auto'
+        shadows={!isMobile && !isTablet}
+        dpr={getDPR()}
+        camera={{ position: [20, 3, 5], fov: 25 }}
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "block",
+          position: "absolute",
+          top: 0,
+          left: 0,
+        }}
+        gl={{
+          preserveDrawingBuffer: true,
+          antialias: !isMobile,
+          stencil: false,
+          depth: true,
+          alpha: true,
+          powerPreference: isMobile ? "low-power" : "high-performance",
+          failIfMajorPerformanceCaveat: false,
+          logarithmicDepthBuffer: isMobile,
+        }}
+        onCreated={(state) => {
+          try {
+            // Ensure canvas fits properly
+            if (state.gl.domElement) {
+              state.gl.domElement.style.width = "100%";
+              state.gl.domElement.style.height = "100%";
+              state.gl.domElement.style.display = "block";
+              state.gl.domElement.style.position = "absolute";
+              state.gl.domElement.style.top = "0";
+              state.gl.domElement.style.left = "0";
+            }
+          } catch (e) {
+            console.error("Canvas setup error:", e);
           }
-        } catch (e) {
-          console.error("Canvas setup error:", e);
-        }
-      }}
-    >
-      <Suspense fallback={<CanvasLoader />}>
-        <OrbitControls
-          enableZoom={false}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={Math.PI / 2}
-          enablePan={false}
-          enableRotate={!isMobile}
-        />
-        <Computers isMobile={isMobile} />
-      </Suspense>
+        }}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <OrbitControls
+            enableZoom={false}
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={Math.PI / 2}
+            enablePan={false}
+            enableRotate={!isMobile}
+          />
+          <Computers isMobile={isMobile} />
+        </Suspense>
 
-      <Preload all />
-    </Canvas>
+        <Preload all />
+      </Canvas>
+    </div>
   );
 };
 

@@ -5,7 +5,7 @@ import { ComputersCanvas } from "./canvas";
 
 const Hero = () => {
   return (
-    <section className='relative w-full h-screen mx-auto bg-black'>
+    <section className='relative w-full mx-auto bg-black' style={{ height: '100dvh' }}>
       {/* Canvas Background - positioned absolutely with pointer-events-none */}
       <div className='absolute inset-0 w-full h-full pointer-events-none'>
         <ComputersCanvas />

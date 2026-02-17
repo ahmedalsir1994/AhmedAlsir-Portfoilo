@@ -52,7 +52,7 @@ const StarsCanvas = () => {
     <div className='w-full h-full absolute inset-0 z-[-1]'>
       <Canvas 
         camera={{ position: [0, 0, 1] }}
-        dpr={[1, 1.5]}
+        dpr={1}
         gl={{
           antialias: false,
           stencil: false,

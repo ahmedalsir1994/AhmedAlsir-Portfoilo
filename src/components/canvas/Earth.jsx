@@ -39,8 +39,9 @@ const EarthCanvas = () => {
         stencil: false,
         alpha: true,
         depth: true,
-        powerPreference: "high-performance",
+        powerPreference: isMobile ? "low-power" : "high-performance",
         failIfMajorPerformanceCaveat: false,
+        logarithmicDepthBuffer: isMobile,
       }}
       camera={{
         fov: 45,
@@ -49,6 +50,7 @@ const EarthCanvas = () => {
         position: [-4, 3, 6],
       }}
       style={{ width: "100%", height: "100%", display: "block" }}
+      dpr={isMobile ? 1 : 1.3}
       onCreated={(state) => {
         if (state.gl.domElement) {
           state.gl.domElement.style.width = "100%";

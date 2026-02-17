@@ -45,7 +45,7 @@ const BallCanvas = ({ icon }) => {
   return (
     <Canvas
       frameloop='demand'
-      dpr={[1, 1.5]}
+      dpr={1}
       gl={{
         preserveDrawingBuffer: true,
         antialias: true,
