@@ -45,11 +45,27 @@ const BallCanvas = ({ icon }) => {
   return (
     <Canvas
       frameloop='demand'
-      dpr={[1, 2]}
-      gl={{ preserveDrawingBuffer: true }}
+      dpr={[1, 1.5]}
+      gl={{
+        preserveDrawingBuffer: true,
+        antialias: true,
+        alpha: true,
+        stencil: false,
+        depth: true,
+        powerPreference: "high-performance",
+        failIfMajorPerformanceCaveat: false,
+      }}
+      style={{ width: "100%", height: "100%", display: "block" }}
+      onCreated={(state) => {
+        if (state.gl.domElement) {
+          state.gl.domElement.style.width = "100%";
+          state.gl.domElement.style.height = "100%";
+          state.gl.domElement.style.display = "block";
+        }
+      }}
     >
       <Suspense fallback={<CanvasLoader />}>
-        <OrbitControls enableZoom={false} />
+        <OrbitControls enableZoom={false} enablePan={false} />
         <Ball imgUrl={icon} />
       </Suspense>
 

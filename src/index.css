@@ -202,3 +202,36 @@
       -2.6em 0em 0 0em rgba(255, 255, 255, 0.7), -1.8em -1.8em 0 0em #ffffff;
   }
 }
+
+/* Canvas Optimization Styles */
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100%;
+  max-height: 100%;
+  touch-action: manipulation;
+}
+
+/* WebGL Canvas Container Fixes */
+div > canvas {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+}
+
+/* Ensure canvas renders properly on mobile */
+@media (max-width: 768px) {
+  canvas {
+    image-rendering: auto;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Fix for iPhone Safari */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}

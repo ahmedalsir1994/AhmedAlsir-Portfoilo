@@ -33,10 +33,14 @@ const EarthCanvas = () => {
     <Canvas
       frameloop='demand'
       dpr={isMobile ? 1 : [1, 1.5]}
-      gl={{ 
+      gl={{
         preserveDrawingBuffer: true,
-        antialias: false,
+        antialias: !isMobile,
         stencil: false,
+        alpha: true,
+        depth: true,
+        powerPreference: "high-performance",
+        failIfMajorPerformanceCaveat: false,
       }}
       camera={{
         fov: 45,
@@ -44,11 +48,20 @@ const EarthCanvas = () => {
         far: 200,
         position: [-4, 3, 6],
       }}
+      style={{ width: "100%", height: "100%", display: "block" }}
+      onCreated={(state) => {
+        if (state.gl.domElement) {
+          state.gl.domElement.style.width = "100%";
+          state.gl.domElement.style.height = "100%";
+          state.gl.domElement.style.display = "block";
+        }
+      }}
     >
       <Suspense fallback={<CanvasLoader />}>
         <OrbitControls
           autoRotate
           enableZoom={false}
+          enablePan={false}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 2}
         />

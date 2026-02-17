@@ -49,11 +49,26 @@ const Stars = (props) => {
 
 const StarsCanvas = () => {
   return (
-    <div className='w-full h-auto absolute inset-0 z-[-1]'>
+    <div className='w-full h-full absolute inset-0 z-[-1]'>
       <Canvas 
         camera={{ position: [0, 0, 1] }}
-        dpr={1}
-        gl={{ antialias: false, stencil: false }}
+        dpr={[1, 1.5]}
+        gl={{
+          antialias: false,
+          stencil: false,
+          alpha: true,
+          depth: false,
+          powerPreference: "high-performance",
+          failIfMajorPerformanceCaveat: false,
+        }}
+        style={{ width: "100%", height: "100%", display: "block" }}
+        onCreated={(state) => {
+          if (state.gl.domElement) {
+            state.gl.domElement.style.width = "100%";
+            state.gl.domElement.style.height = "100%";
+            state.gl.domElement.style.display = "block";
+          }
+        }}
       >
         <Suspense fallback={null}>
           <Stars />

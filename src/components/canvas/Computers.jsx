@@ -33,54 +33,74 @@ const Computers = ({ isMobile }) => {
 
 const ComputersCanvas = () => {
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
 
   useEffect(() => {
-    // Add a listener for changes to the screen size
-    const mediaQuery = window.matchMedia("(max-width: 500px)");
+    // Handle mobile detection with better breakpoints
+    const mobileQuery = window.matchMedia("(max-width: 500px)");
+    const tabletQuery = window.matchMedia("(max-width: 1024px)");
 
-    // Set the initial value of the `isMobile` state variable
-    setIsMobile(mediaQuery.matches);
+    const handleMobileChange = (e) => setIsMobile(e.matches);
+    const handleTabletChange = (e) => setIsTablet(e.matches);
 
-    // Define a callback function to handle changes to the media query
-    const handleMediaQueryChange = (event) => {
-      setIsMobile(event.matches);
-    };
+    setIsMobile(mobileQuery.matches);
+    setIsTablet(tabletQuery.matches);
 
-    // Add the callback function as a listener for changes to the media query
-    mediaQuery.addEventListener("change", handleMediaQueryChange);
+    mobileQuery.addEventListener("change", handleMobileChange);
+    tabletQuery.addEventListener("change", handleTabletChange);
 
-    // Remove the listener when the component is unmounted
     return () => {
-      mediaQuery.removeEventListener("change", handleMediaQueryChange);
+      mobileQuery.removeEventListener("change", handleMobileChange);
+      tabletQuery.removeEventListener("change", handleTabletChange);
     };
   }, []);
 
-  return (
-    <Canvas
-      frameloop='auto'
-      shadows={!isMobile}
-      dpr={isMobile ? 1 : 1.5}
-      camera={{ position: [20, 3, 5], fov: 25 }}
-      style={{ width: "100%", height: "100%" }}
-      gl={{ 
-        preserveDrawingBuffer: true,
-        antialias: !isMobile,
-        stencil: false,
-        depth: true,
-        powerPreference: "high-performance",
-      }}
-    >
-      <Suspense fallback={<CanvasLoader />}>
-        <OrbitControls
-          enableZoom={false}
-          maxPolarAngle={Math.PI / 2}
-          minPolarAngle={Math.PI / 2}
-        />
-        <Computers isMobile={isMobile} />
-      </Suspense>
+  // Determine optimal DPR based on device
+  const getDPR = () => {
+    if (isMobile) return 1;
+    if (isTablet) return [1, 1.2];
+    return [1.5, 2];
+  };
 
-      <Preload all />
-    </Canvas>
+  return (
+    <div className='w-full h-screen'>
+      <Canvas
+        frameloop='auto'
+        shadows={!isMobile && !isTablet}
+        dpr={getDPR()}
+        camera={{ position: [20, 3, 5], fov: 25 }}
+        style={{ width: "100%", height: "100%", display: "block" }}
+        gl={{
+          preserveDrawingBuffer: true,
+          antialias: !isMobile,
+          stencil: false,
+          depth: true,
+          alpha: true,
+          powerPreference: "high-performance",
+          failIfMajorPerformanceCaveat: false,
+        }}
+        onCreated={(state) => {
+          // Ensure canvas fits properly
+          if (state.gl.domElement) {
+            state.gl.domElement.style.width = "100%";
+            state.gl.domElement.style.height = "100%";
+            state.gl.domElement.style.display = "block";
+          }
+        }}
+      >
+        <Suspense fallback={<CanvasLoader />}>
+          <OrbitControls
+            enableZoom={false}
+            maxPolarAngle={Math.PI / 2}
+            minPolarAngle={Math.PI / 2}
+            enablePan={false}
+          />
+          <Computers isMobile={isMobile} />
+        </Suspense>
+
+        <Preload all />
+      </Canvas>
+    </div>
   );
 };
 
