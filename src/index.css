@@ -243,13 +243,42 @@ div > canvas {
   pointer-events: none;
 }
 
-/* Hero Section Canvas Container */
-.hero-canvas {
-  position: absolute;
-  inset: 0;
+/* Image Loading Styles */
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Project Card Images */
+.project-image {
   width: 100%;
   height: 100%;
-  z-index: 1;
+  object-fit: cover;
+  object-position: center;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Loading State Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.image-loading {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(
+    90deg,
+    rgba(128, 128, 128, 0.2) 0%,
+    rgba(128, 128, 128, 0.5) 50%,
+    rgba(128, 128, 128, 0.2) 100%
+  );
+  background-size: 1000px 100%;
 }
 
 /* Ensure proper rendering on mobile */

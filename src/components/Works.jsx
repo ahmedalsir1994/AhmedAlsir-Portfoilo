@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Tilt from "react-parallax-tilt";
 import { motion } from "framer-motion";
 
@@ -16,6 +16,18 @@ const ProjectCard = ({
   image,
   source_code_link,
 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoaded(true);
+  };
+
   return (
     <Tilt
       tiltMaxAngleX={45}
@@ -31,25 +43,46 @@ const ProjectCard = ({
         viewport={{ once: true, amount: 0.25 }}
         className='bg-tertiary p-5 rounded-2xl w-full h-full'
       >
-        <div className='relative w-full h-[230px]'>
-          <img
-            src={image}
-            alt='project_image'
-            className='w-full h-full object-cover rounded-2xl'
-          />
-
-          <div className='absolute inset-0 flex justify-end m-3 card-img_hover'>
-            <div
-              onClick={() => window.open(source_code_link, "_blank")}
-              className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
-            >
+        <div className='relative w-full h-[230px] bg-black-200 rounded-2xl overflow-hidden'>
+          {!imageError ? (
+            <>
               <img
-                src={github}
-                alt='source code'
-                className='w-1/2 h-1/2 object-contain'
+                src={image}
+                alt={name}
+                onLoad={handleImageLoad}
+                onError={handleImageError}
+                loading='lazy'
+                decoding='async'
+                className={`w-full h-full object-cover rounded-2xl transition-opacity duration-300 ${
+                  imageLoaded ? 'opacity-100' : 'opacity-0'
+                }`}
               />
+              {!imageLoaded && (
+                <div className='absolute inset-0 bg-gray-700 animate-pulse flex items-center justify-center rounded-2xl'>
+                  <span className='text-gray-500'>Loading...</span>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className='absolute inset-0 bg-gray-800 flex items-center justify-center rounded-2xl'>
+              <span className='text-gray-400 text-sm text-center'>Image not available</span>
             </div>
-          </div>
+          )}
+
+          {!imageError && imageLoaded && (
+            <div className='absolute inset-0 flex justify-end m-3 card-img_hover'>
+              <div
+                onClick={() => window.open(source_code_link, "_blank")}
+                className='black-gradient w-10 h-10 rounded-full flex justify-center items-center cursor-pointer'
+              >
+                <img
+                  src={github}
+                  alt='source code'
+                  className='w-1/2 h-1/2 object-contain'
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         <div className='mt-5'>
